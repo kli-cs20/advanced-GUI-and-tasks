@@ -44,15 +44,28 @@ function toggleTask() {
   } else {
     task.completed = "";
   }
+  saveTasks();
   displayAll();
 }
 
 function removeTask() {
-  console.log("Remove Task");
+  let index = +prompt("Enter # of task: ");
+  if (index >= 0 && index < tasks.length) {
+    // VALID INDEX -> remove
+    tasks.splice(index, 1);
+  } else {
+    alert("Invalid task #");
+  }
+  saveTasks();
+  displayAll();
 }
 
+// Clear all tasks
 function clearAll() {
-  console.log("Clear All");
+  tasks = [];
+  
+  saveTasks();
+  displayAll();
 }
 
 // HELPER FUNCTIONS
