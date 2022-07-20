@@ -6,7 +6,8 @@ let menuEl = document.getElementById('menu');
 let tasksEl = document.getElementById('tasks');
 
 // Global Variables
-let tasks = [];
+let tasks = loadTasks();
+displayAll();
 
 // Go Btn - Menu Listener
 goBtnEl.addEventListener('click', goBtnHandler);
@@ -30,19 +31,28 @@ function goBtnHandler() {
 function addTask() {
   let description = prompt("Enter task description: ");
   tasks.push(newTask(description));
+  saveTasks();
   displayAll();
 }
 
+// Toggle completed status of a task
 function toggleTask() {
-  console.log('Toggle Task');
+  let index = +prompt("Enter # of task: ");
+  let task = tasks[index];
+  if (task.completed === "") {
+    task.completed = "completed";
+  } else {
+    task.completed = "";
+  }
+  displayAll();
 }
 
 function removeTask() {
-  console.log('Remove Task');
+  console.log("Remove Task");
 }
 
 function clearAll() {
-  console.log('Clear All');
+  console.log("Clear All");
 }
 
 // HELPER FUNCTIONS
@@ -66,8 +76,19 @@ function displayAll() {
 // Get html for task
 function getTaskHTMLStr(task, i) {
   return `
-  <div>
+  <div class="${task.completed}">
     ${i}: ${task.description}
   </div>
   `;
+}
+
+// Save global tasks in local storage
+function saveTasks() {
+  localStorage.setItem("tasks", JSON.stringify(tasks));
+}
+
+// Load tasks from local storage
+function loadTasks() {
+  let taskStr = localStorage.getItem("tasks");
+  return JSON.parse(taskStr) ?? [];
 }
