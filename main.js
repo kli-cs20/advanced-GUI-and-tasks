@@ -66,6 +66,7 @@ function newTask(taskDescription) {
 
 // Display all tasks in global tasks array
 function displayAll() {
+  tasksEl.innerHTML = "";
   for (let i = 0; i < tasks.length; i++) {
     tasksEl.appendChild(getTaskHTML(tasks[i], i));
   }
@@ -78,6 +79,7 @@ function getTaskHTML(task, i) {
   // Check Box Element
   let checkboxEl = document.createElement("input");
   checkboxEl.type = "checkbox";
+  checkboxEl.addEventListener("input", checkboxHandler);
   
   // Task Description Text Node
   let textEl = document.createTextNode(task.description);
@@ -85,6 +87,8 @@ function getTaskHTML(task, i) {
   // Remove Button
   let buttonEl = document.createElement("button");
   buttonEl.innerHTML = "Remove";
+  buttonEl.dataset.index = i;
+  buttonEl.addEventListener("click", removeBtnHandler);
 
   // Add Everythin to a div element
   let divEl = document.createElement("div");
@@ -105,4 +109,17 @@ function saveTasks() {
 function loadTasks() {
   let taskStr = localStorage.getItem("tasks");
   return JSON.parse(taskStr) ?? [];
+}
+
+// Event Functions
+function checkboxHandler(e) {
+  console.log(e.target);
+}
+
+function removeBtnHandler(e) {
+  // Get index of task to remove
+  let index = +e.target.dataset.index;
+  tasks.splice(index, 1);
+  saveTasks();
+  displayAll();
 }
