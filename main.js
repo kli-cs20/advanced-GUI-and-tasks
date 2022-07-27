@@ -1,8 +1,7 @@
 // My Tasks Basic
 
 // HTML Elements
-let goBtnEl = document.getElementById('go-btn');
-let menuEl = document.getElementById('menu');
+let taskInputEl = document.getElementById("task-input");
 let tasksEl = document.getElementById('tasks');
 
 // Global Variables
@@ -10,32 +9,20 @@ let tasks = loadTasks();
 displayAll();
 
 // Go Btn - Menu Listener
-goBtnEl.addEventListener('click', goBtnHandler);
+taskInputEl.addEventListener('keydown', taskSubmitHandler);
 
-function goBtnHandler() {
-  // Get Menu Selection
-  let selection = menuEl.value;
-
-  if (selection === 'add') {
-    addTask();
-  } else if (selection === 'toggle') {
-    toggleTask();
-  } else if (selection === 'remove') {
-    removeTask();
-  } else if (selection === 'clear') {
-    clearAll();
+function taskSubmitHandler(e) {
+  if (e.code === "Enter") {
+    // Add Submitted Task
+    let userTask = taskInputEl.value;
+    tasks.push(newTask(userTask));
+    saveTasks();
+    displayAll();
+    taskInputEl.value = "";
   }
 }
 
 // MENU FUNCTIONS
-function addTask() {
-  let description = prompt("Enter task description: ");
-  tasks.push(newTask(description));
-  saveTasks();
-  displayAll();
-}
-
-// Toggle completed status of a task
 function toggleTask() {
   let index = +prompt("Enter # of task: ");
   let task = tasks[index];
@@ -79,20 +66,34 @@ function newTask(taskDescription) {
 
 // Display all tasks in global tasks array
 function displayAll() {
-  let outputStr = "";
   for (let i = 0; i < tasks.length; i++) {
-    outputStr += getTaskHTMLStr(tasks[i], i);
+    tasksEl.appendChild(getTaskHTML(tasks[i], i));
   }
-  tasksEl.innerHTML = outputStr;
 }
 
 // Get html for task
-function getTaskHTMLStr(task, i) {
-  return `
-  <div class="${task.completed}">
-    ${i}: ${task.description}
-  </div>
-  `;
+function getTaskHTML(task, i) {
+  // Use JavaScript to build Task <div>
+
+  // Check Box Element
+  let checkboxEl = document.createElement("input");
+  checkboxEl.type = "checkbox";
+  
+  // Task Description Text Node
+  let textEl = document.createTextNode(task.description);
+
+  // Remove Button
+  let buttonEl = document.createElement("button");
+  buttonEl.innerHTML = "Remove";
+
+  // Add Everythin to a div element
+  let divEl = document.createElement("div");
+
+  divEl.appendChild(checkboxEl);
+  divEl.appendChild(textEl);
+  divEl.appendChild(buttonEl);
+
+  return divEl;
 }
 
 // Save global tasks in local storage
