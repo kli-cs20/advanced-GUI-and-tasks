@@ -60,7 +60,7 @@ function clearAll() {
 function newTask(taskDescription) {
   return {
     description: taskDescription,
-    completed: ""
+    completed: false,
   };
 }
 
@@ -72,17 +72,23 @@ function displayAll() {
   }
 }
 
-// Get html for task
+// Get HTML for task
 function getTaskHTML(task, i) {
   // Use JavaScript to build Task <div>
 
   // Check Box Element
   let checkboxEl = document.createElement("input");
   checkboxEl.type = "checkbox";
+  checkboxEl.dataset.index = i;
+  checkboxEl.checked = task.completed;
   checkboxEl.addEventListener("input", checkboxHandler);
   
   // Task Description Text Node
-  let textEl = document.createTextNode(task.description);
+  let textSpanEl = document.createElement("span");
+  textSpanEl.innerHTML = task.description;
+  if (task.completed) {
+    textSpanEl.className = "completed";
+  }
 
   // Remove Button
   let buttonEl = document.createElement("button");
@@ -94,7 +100,7 @@ function getTaskHTML(task, i) {
   let divEl = document.createElement("div");
 
   divEl.appendChild(checkboxEl);
-  divEl.appendChild(textEl);
+  divEl.appendChild(textSpanEl);
   divEl.appendChild(buttonEl);
 
   return divEl;
@@ -113,7 +119,12 @@ function loadTasks() {
 
 // Event Functions
 function checkboxHandler(e) {
-  console.log(e.target);
+  // Get index of task to toggle
+  let index = +e.target.dataset.index;
+  let task = tasks[index];
+  task.completed = !task.completed;
+  saveTasks();
+  displayAll();
 }
 
 function removeBtnHandler(e) {
